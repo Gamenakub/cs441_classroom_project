@@ -1,0 +1,7 @@
+name: music-world
+
+include:
+  - path: laravel-api/compose.yaml
+    env_file: laravel-api/.env
+  - path: sveltekit-frontend/docker-compose.yml
+    env_file: sveltekit-frontend/.env

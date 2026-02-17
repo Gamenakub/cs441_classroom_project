@@ -1,0 +1,15 @@
+services:
+  laravel-api:
+    networks:
+      - shared-network
+
+  frontend:
+    networks:
+      - shared-network
+    environment:
+      - API_URL=http://laravel-api
+      - PUBLIC_API_BASE=http://localhost:8000
+
+networks:
+  shared-network:
+    name: music-world-network
