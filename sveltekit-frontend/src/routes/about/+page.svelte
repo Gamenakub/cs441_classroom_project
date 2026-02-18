@@ -1,23 +1,16 @@
-<script lang="ts">
-    import { globalCounter } from "$lib/stores/counter.svelte";
+<div class="min-h-screen bg-gray-50 flex items-center justify-center px-6">
+    <div class="bg-white border border-gray-300 rounded-lg p-10 text-center">
 
-    function updateCounter() {
-        globalCounter.increment();
-    }
-</script>
+        <h1 class="text-2xl font-semibold text-gray-800 mb-3">
+            About Me
+        </h1>
 
-<div class="min-h-screen bg-blue-50 flex flex-col items-center justify-center px-4 text-center">
+        <p class="text-sm text-gray-500">
+            This website is created by Isarapong Tuensakul
+        </p>
+        <p class="text-sm text-gray-500">
+            6610402272 Sec 1, 11
+        </p>
 
-    <h1 class="text-4xl font-bold text-blue-900 mb-4">
-        About Me
-    </h1>
-
-    <button
-        on:click={updateCounter}
-        class="px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold
-               hover:bg-blue-700 active:scale-95 transition shadow-md"
-    >
-        Click
-    </button>
-
+    </div>
 </div>

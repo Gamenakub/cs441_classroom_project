@@ -17,76 +17,103 @@
     };
 </script>
 
-<div class="min-h-screen bg-blue-50 py-16 px-4">
-    <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-blue-100 overflow-hidden">
+<div class="min-h-screen bg-gray-50 py-10">
+    <div class="max-w-2xl mx-auto px-6">
 
-        <div class="px-8 py-6 border-b border-blue-100 bg-blue-200/80">
-            <h1 class="text-2xl font-bold text-blue-900">Create New Artist</h1>
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl font-semibold text-gray-800">
+                Create New Artist
+            </h1>
+            <p class="text-sm text-gray-500 mt-1">
+                Add a new artist to the system
+            </p>
         </div>
 
-        <form
-            method="POST"
-            enctype="multipart/form-data"
-            use:enhance={handleSubmit}
-            class="px-8 py-8 space-y-6"
-        >
-            <div>
-                <label class="block mb-2 text-sm font-semibold text-blue-800">
-                    Artist Name
-                </label>
-                <input
-                    type="text"
-                    name="name"
-                    disabled={isSubmitting}
-                    value={form?.data?.name ?? ''}
-                    class="w-full p-3 rounded-xl border border-blue-200 bg-blue-50/40
-                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition
-                    {form?.errors?.name ? 'border-red-500 bg-red-50' : ''}"
-                />
-                {#if form?.errors?.name}
-                    <p class="text-red-500 text-sm mt-2">{form.errors.name[0]}</p>
-                {/if}
-            </div>
+        <!-- Card -->
+        <div class="bg-white border border-gray-300 rounded-lg overflow-hidden">
 
-            <div>
-                <label class="block mb-3 text-sm font-semibold text-blue-800">
-                    Profile Image
-                </label>
-
-                <input
-                    type="file"
-                    name="image"
-                    accept="image/*"
-                    disabled={isSubmitting}
-                    class="w-full text-sm text-blue-600
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-full file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-blue-100 file:text-blue-700
-                    hover:file:bg-blue-200 transition"
-                />
-
-                {#if form?.errors?.image}
-                    <p class="text-red-500 text-sm mt-2">{form.errors.image[0]}</p>
-                {/if}
-            </div>
-
-            <button
-                type="submit"
-                disabled={isSubmitting}
-                class="w-full py-3 rounded-xl font-semibold text-white transition
-                bg-blue-600 hover:bg-blue-700
-                disabled:bg-blue-300 disabled:cursor-not-allowed shadow-md"
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                use:enhance={handleSubmit}
             >
-                {isSubmitting ? 'Saving...' : 'Save Artist'}
-            </button>
 
-            {#if form?.message}
-                <div class="p-3 bg-red-100 text-red-700 rounded-lg text-sm text-center">
-                    {form.message}
+                <div class="p-6 space-y-5">
+
+                    <!-- Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">
+                            Artist Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            disabled={isSubmitting}
+                            value={form?.data?.name ?? ''}
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm
+                            focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                            {form?.errors?.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}"
+                        />
+
+                        {#if form?.errors?.name}
+                            <p class="text-xs text-red-600 mt-1">
+                                {form.errors.name[0]}
+                            </p>
+                        {/if}
+                    </div>
+
+                    <!-- Image -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">
+                            Profile Image
+                        </label>
+
+                        <input
+                            type="file"
+                            name="image"
+                            accept="image/*"
+                            disabled={isSubmitting}
+                            class="w-full text-sm text-gray-700
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-md file:border file:border-gray-300
+                            file:bg-gray-50 file:text-gray-700
+                            hover:file:bg-gray-100 transition"
+                        />
+
+                        {#if form?.errors?.image}
+                            <p class="text-xs text-red-600 mt-1">
+                                {form.errors.image[0]}
+                            </p>
+                        {/if}
+                    </div>
+
+                    {#if form?.message}
+                        <div class="p-3 bg-red-100 text-red-700 rounded-md text-sm">
+                            {form.message}
+                        </div>
+                    {/if}
+
                 </div>
-            {/if}
-        </form>
+
+                <!-- Footer -->
+                <div class="px-6 py-4 border-t border-gray-200 flex justify-end">
+
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        class="px-5 py-2 text-sm font-medium bg-blue-600 text-white rounded-md
+                               hover:bg-blue-700 disabled:bg-blue-400 transition"
+                    >
+                        {isSubmitting ? 'Saving...' : 'Save Artist'}
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 </div>

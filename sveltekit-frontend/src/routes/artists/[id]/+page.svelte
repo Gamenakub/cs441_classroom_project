@@ -23,78 +23,115 @@
 	};
 </script>
 
-<div class="min-h-screen bg-blue-50 py-16 px-6">
-	<div class="max-w-5xl mx-auto">
-		<div class="bg-white rounded-2xl shadow-xl border border-blue-100 overflow-hidden">
+<div class="min-h-screen bg-gray-50 py-10">
+	<div class="max-w-6xl mx-auto px-6">
 
-			<div class="flex flex-col md:flex-row">
+		<!-- Header -->
+		<div class="mb-6">
+			<h1 class="text-2xl font-semibold text-gray-800">
+				{artist.name}
+			</h1>
+			<p class="text-sm text-gray-500 mt-1">
+				Artist details
+			</p>
+		</div>
 
-				<div class="w-full md:w-96 bg-blue-100">
-					{#if artist.image_path}
-						<img
-							src={artist.image_path}
-							alt={artist.name}
-							class="w-full h-80 md:h-full object-cover"
-						/>
-					{:else}
-						<div class="w-full h-80 flex items-center justify-center text-blue-400 text-sm">
-							No Image
-						</div>
-					{/if}
-				</div>
+		<!-- Card -->
+		<div class="bg-white border border-gray-300 rounded-lg overflow-hidden">
 
-				<div class="flex-1 p-10 flex flex-col justify-between">
+			<div class="grid grid-cols-1 md:grid-cols-4">
 
-					<div>
-						<div class="flex justify-between items-start mb-6">
-							<div>
-								<h1 class="text-3xl font-bold text-blue-900 mb-2">
-									{artist.name}
-								</h1>
-								<span class="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
-									Artist
-								</span>
+				<!-- Left: Image -->
+				<div class="flex flex-col items-center justify-center p-6 border-b md:border-b-0 md:border-r border-gray-200">
+
+					<div class="w-32 h-32 mb-4">
+						{#if artist.image_path}
+							<img
+								src={artist.image_path}
+								alt={artist.name}
+								class="w-full h-full rounded-full object-cover border border-gray-300"
+							/>
+						{:else}
+							<div
+								class="w-full h-full rounded-full bg-gray-200 flex items-center justify-center
+									   text-gray-500 text-3xl font-semibold">
+								{artist.name.charAt(0).toUpperCase()}
 							</div>
-
-							<span class="text-xs text-blue-400 bg-blue-50 px-2 py-1 rounded border border-blue-100">
-								ID: {artist.id}
-							</span>
-						</div>
-
-						<div class="border-t border-blue-100 pt-6">
-							<p class="text-xs text-blue-400 break-all">
-								<span class="font-medium text-blue-600">Source:</span>
-								{artist.image_path ?? '-'}
-							</p>
-						</div>
+						{/if}
 					</div>
 
-					<div class="mt-10 flex gap-4">
-						<a
-							href={`/artists/${artist.id}/edit`}
-							class="px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-md"
-						>
-							Edit
-						</a>
+					<div class="text-sm font-semibold text-gray-800 text-center">
+						{artist.name}
+					</div>
 
-						<form
-							action="?/delete"
-							method="POST"
-							use:enhance={handleDelete}
-						>
-							<button
-								type="submit"
-								disabled={isDeleting}
-								class="px-5 py-2.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 disabled:bg-blue-50 transition"
-							>
-								{isDeleting ? 'Deleting...' : 'Delete'}
-							</button>
-						</form>
+					<div class="text-xs text-gray-500 mt-1 text-center break-all">
+						ID: {artist.id}
+					</div>
+				</div>
+
+				<!-- Right: Info -->
+				<div class="md:col-span-3 p-6">
+
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+						<div>
+							<label class="block text-sm font-medium text-gray-600 mb-1">
+								Name
+							</label>
+							<input
+								value={artist.name}
+								disabled
+								class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm
+									   bg-gray-50 text-gray-700 cursor-not-allowed"
+							/>
+						</div>
+
+						<div>
+							<label class="block text-sm font-medium text-gray-600 mb-1">
+								Image Source
+							</label>
+							<input
+								value={artist.image_path ?? '-'}
+								disabled
+								class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm
+									   bg-gray-50 text-gray-700 cursor-not-allowed"
+							/>
+						</div>
+
 					</div>
 
 				</div>
 			</div>
 
+			<!-- Footer Actions -->
+			<div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
+
+				<a
+					href={`/artists/${artist.id}/edit`}
+					class="px-4 py-2 text-sm border border-gray-300 rounded-md
+						   hover:bg-gray-50 transition"
+				>
+					Edit
+				</a>
+
+				<form
+					action="?/delete"
+					method="POST"
+					use:enhance={handleDelete}
+				>
+					<button
+						type="submit"
+						disabled={isDeleting}
+						class="px-5 py-2 text-sm font-medium bg-red-600 text-white rounded-md
+							   hover:bg-red-700 disabled:bg-red-400 transition"
+					>
+						{isDeleting ? 'Deleting...' : 'Delete'}
+					</button>
+				</form>
+
+			</div>
+
 		</div>
+
 	</div>
 </div>

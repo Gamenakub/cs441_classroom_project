@@ -1,16 +1,5 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import {onMount} from 'svelte';
-  import type {PageProps} from './$types';
-import { globalCounter } from '$lib/stores/counter.svelte.ts';
-import { theme } from '$lib/stores/theme.svelte.ts';  
-import ThemeToggle from '$lib/components/theme-toggle.svelte'
-  const { brand } = $props()
-
-  onMount(() => {
-    const counter = localStorage.getItem('counter');
-    globalCounter.set(counter == null ? 0:Number(counter));
-  })
   
 	function getLinkClass(path: string) {
 		const currentPath = $page.url.pathname;
@@ -19,73 +8,76 @@ import ThemeToggle from '$lib/components/theme-toggle.svelte'
 		const isActive = path === '/' ? currentPath === '/' : currentPath.startsWith(path);
 
 		const activeClass = isActive
-			? 'hover:text-blue-200 transition-colors duration-200'
-			: 'text-blue-200';
+			? 'text-blue-700 bg-blue-100/50 shadow-sm ring-1 ring-blue-200'
+			: 'text-slate-500 hover:text-slate-900 hover:bg-white/50';
 
 		return `${baseClass} ${activeClass}`;
 	}
-
-		onMount(() => {   // ตรวจสอบว่า document มี class 'dark' หรือไม่ ถ้ามี ให้ set ที่ store/theme เป็น true
-		if (document.documentElement.classList.contains('dark')) {
-			theme.set(true);
-		} else {
-		  theme.set(false);  // ถ้าไม่มี ให้ set ที่ store/theme เป็น false
-		}
-	});
-
-	$effect(() => {    // ตรวจสอบว่า theme มีการเปลี่ยนค่าหรือไม่ ถ้ามีให้แสดงผลเป็น theme ที่เปลี่ยน และเก็บค่าที่ localStorage (สำหรับการ refresh หน้า)
-		const html = document.documentElement;
-
-		if (theme.isDark) {
-			html.classList.add('dark');
-			localStorage.setItem('theme', 'dark');
-		} else {
-			html.classList.remove('dark');
-			localStorage.setItem('theme', 'white');
-		}
-	});
 </script>
 
-<nav class="sticky top-0 bg-blue-600 text-white dark:bg-gray-800">
-	<div class="max-w-6xl mx-auto">
-		<div class="flex items-center justify-between h-16">
+<nav
+	class="sticky top-0 z-50 w-full border-b border-slate-200/50 bg-white/80 px-6 py-4 shadow-sm backdrop-blur-xl transition-all"
+>
+	<div class="mx-auto flex max-w-7xl items-center justify-between">
+		<a href="/" class="group flex items-center gap-2">
+			<div
+				class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-md transition-transform group-hover:scale-105 group-hover:rotate-3"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="20"
+					height="20"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="m2 17 10 5 10-5" /><path
+						d="m2 12 10 5 10-5"
+					/></svg
+				>
+			</div>
+			<span
+				class="text-xl font-bold tracking-tight text-slate-800 transition-colors group-hover:text-blue-600"
+			>
+				MyBrand
+			</span>
+		</a>
 
-			<a href="/" class="text-2xl font-bold text-blue-200">
-				<span class="text-white">Web</span><span class="text-blue-200">Tech</span>
+		<ul
+			class="hidden items-center gap-1 rounded-full border border-slate-200/60 bg-slate-50/50 p-1.5 backdrop-blur-sm md:flex"
+		>
+			<li>
+				<a href="/" class={getLinkClass('/')}> Home </a>
+			</li>
+			<li>
+				<a href="/artists" class={getLinkClass('/artists')}> Artists </a>
+			</li>
+			<li>
+				<a href="/about" class={getLinkClass('/about')}> About </a>
+			</li>
+			<li>
+				<a href="/shop" class={getLinkClass('/shop')}> Shop </a>
+			</li>
+			<li>
+				<a href="/emoji-hub" class={getLinkClass('/emoji-hub')}> Emoji Hub </a>
+			</li>
+		</ul>
+
+		<div class="flex items-center gap-4">
+			<a
+				href="/login"
+				class="hidden text-sm font-semibold text-slate-500 hover:text-slate-900 md:block"
+			>
+				Log in
 			</a>
-
-			<ul class="flex items-center gap-8 font-medium">
-				<li>
-					<a href="/" class={getLinkClass('/')}>
-						Home
-					</a>
-				</li>
-				<li>
-					<a href="/artists" class={getLinkClass('/artists')}>
-						Artists
-					</a>
-				</li>
-				<li>
-					<a href="/about" class={getLinkClass('/about')}>
-						About
-					</a>
-				</li>
-				<li>
-					<a href="/shop" class={getLinkClass('/shop')}>
-						Shop
-					</a>
-				</li>
-				<li>
-					<a href="/emoji-hub" class={getLinkClass('/emoji-hub')}>
-						Emoji
-					</a>
-				</li>
-			</ul>
-
-            {globalCounter.count}
-					<div>
-			<ThemeToggle></ThemeToggle>
-		</div>
+			<a
+				href="/signup"
+				class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg active:translate-y-0"
+			>
+				Sign up
+			</a>
 		</div>
 	</div>
 </nav>

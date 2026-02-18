@@ -18,104 +18,75 @@
 	}
 </script>
 
-<div class="container">
-	<h1 class="mb-2 text-center text-3xl font-bold">Emoji Hub 😜</h1>
-	<p class="mb-16 text-center text-gray-500">
-		Render แบบ Client-Side (ดึงข้อมูลจาก emojihub.yurace.pro)
-	</p>
+<div class="min-h-screen bg-gray-50 py-10">
+	<div class="max-w-6xl mx-auto px-6">
 
-	<p class="mb-6 text-center text-gray-500">
-		ทั้งหมด {data.totalEmojis} ตัว | หน้า {currentPage} / {totalPages}
-	</p>
+		<!-- Header -->
+		<div class="mb-6 text-center">
+			<h1 class="text-2xl font-semibold text-gray-800">
+				Emoji Hub 😜
+			</h1>
+			<p class="text-sm text-gray-500 mt-1">
+				Render แบบ Client-Side
+			</p>
+		</div>
 
-	<div class="controls">
-		<button onclick={prevPage} disabled={currentPage === 1}> &larr; ก่อนหน้า </button>
+		<!-- Summary -->
+		<p class="mb-6 text-center text-sm text-gray-500">
+			ทั้งหมด <span class="font-semibold">{data.totalEmojis}</span> ตัว |
+			หน้า <span class="font-semibold">{currentPage}</span> / {totalPages}
+		</p>
 
-		<span class="page-info">หน้า {currentPage}</span>
+		<!-- Pagination Controls -->
+		<div class="flex justify-center items-center gap-2 mb-8 text-sm">
 
-		<button onclick={nextPage} disabled={currentPage === totalPages}> ถัดไป &rarr; </button>
+			<button
+				onclick={prevPage}
+				disabled={currentPage === 1}
+				class="px-3 py-1 border rounded
+				{currentPage === 1
+					? 'text-gray-400 border-gray-300 cursor-not-allowed'
+					: 'hover:bg-gray-100'}"
+			>
+				Prev
+			</button>
+
+			<span class="px-3 py-1 bg-blue-600 text-white border rounded">
+				{currentPage}
+			</span>
+
+			<button
+				onclick={nextPage}
+				disabled={currentPage === totalPages}
+				class="px-3 py-1 border rounded
+				{currentPage === totalPages
+					? 'text-gray-400 border-gray-300 cursor-not-allowed'
+					: 'hover:bg-gray-100'}"
+			>
+				Next
+			</button>
+
+		</div>
+
+		<!-- Grid -->
+		<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+			{#each visibleEmojis as emoji}
+				<div
+					class="bg-white border border-gray-300 rounded-lg p-4 text-center
+						   hover:bg-gray-50 transition"
+				>
+					<div class="text-3xl mb-2">
+						{@html emoji.htmlCode[0]}
+					</div>
+
+					<div class="text-xs text-gray-600 truncate capitalize">
+						{emoji.name}
+					</div>
+				</div>
+			{/each}
+
+		</div>
+
 	</div>
-
-	<div class="grid-layout">
-        {#each visibleEmojis as emoji}
-            <div class="card animate-fade">
-                <div class="emoji-icon">
-                    {@html emoji.htmlCode[0]}
-                </div>
-                <div class="name">{emoji.name}</div>
-            </div>
-        {/each}
-    </div>
 </div>
-
-<style>
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
-
-    .controls {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    button {
-        padding: 0.5rem 1rem;
-        background-color: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: opacity 0.2s;
-    }
-
-    button:disabled {
-        background-color: #d1d5db;
-        cursor: not-allowed;
-    }
-
-    button:hover:not(:disabled) {
-        background-color: #2563eb;
-    }
-
-    .grid-layout {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 1rem;
-    }
-
-    .card {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        padding: 1rem;
-        text-align: center;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-
-    .emoji-icon {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .name {
-        font-size: 0.8rem;
-        color: #4b5563;
-        text-transform: capitalize;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(5px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade {
-        animation: fadeIn 0.3s ease-out;
-    }
-</style>

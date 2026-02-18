@@ -4,79 +4,203 @@
 
     const artists = $derived(data.artists);
     const pagination = $derived(data.pagination);
+
+    const windowSize = 5;
+    const half = Math.floor(windowSize / 2);
+
+    /* reactive แบบ runes */
+    const current = $derived(pagination?.current_page ?? 1);
+    const last = $derived(pagination?.last_page ?? 1);
+
+    const start = $derived(
+        Math.max(1, current - half)
+    );
+
+    const end = $derived(
+        Math.min(last, start + windowSize - 1)
+    );
+
+    const adjustedStart = $derived(
+        Math.max(1, end - windowSize + 1)
+    );
+
+    const pages = $derived(
+        Array.from(
+            { length: end - adjustedStart + 1 },
+            (_, i) => adjustedStart + i
+        )
+    );
 </script>
 
-<div class="min-h-screen bg-blue-50 py-12">
+<div class="min-h-screen bg-gray-50 py-10">
     <div class="max-w-6xl mx-auto px-6">
 
-        <div class="flex items-center justify-between mb-10">
-            <h1 class="text-2xl font-bold text-blue-900">รายชื่อศิลปิน</h1>
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">
+                    Artist Management
+                </h2>
+                <p class="text-sm text-gray-500">
+                    View system artists
+                </p>
+            </div>
+
             <a
                 href="/artists/create"
-                class="px-5 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition shadow-md"
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium 
+                       bg-blue-600 text-white rounded-full 
+                       hover:bg-blue-700 transition shadow-sm"
             >
-                เพิ่มศิลปิน +
+                <span class="text-lg leading-none">+</span>
+                เพิ่มศิลปิน
             </a>
+        </header>
+
+        <!-- List Table -->
+        <div class="bg-white border rounded-lg overflow-hidden">
+            <table class="w-full text-left border-collapse table-fixed">
+                <thead>
+                    <tr class="bg-gray-50 border-b">
+                        <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase">
+                            Artist
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y">
+                    {#if artists.length > 0}
+                        {#each artists as artist}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3 overflow-hidden">
+                                        {#if artist.image_path}
+                                            <img
+                                                src={artist.image_path}
+                                                alt={artist.name}
+                                                class="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                                            />
+                                        {:else}
+                                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                                                N/A
+                                            </div>
+                                        {/if}
+
+                                        <a
+                                            href={`/artists/${artist.id}`}
+                                            class="font-semibold text-sm text-gray-900 hover:underline truncate"
+                                        >
+                                            {artist.name}
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {/each}
+                    {:else}
+                        <tr>
+                            <td class="px-6 py-10 text-center text-gray-500">
+                                No artists found.
+                            </td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
         </div>
 
-        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {#each artists as artist}
-                <li>
-                    <a
-                        href={`/artists/${artist.id}`}
-                        class="block bg-white border border-blue-100 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-                    >
-                        <div class="h-48 bg-blue-100">
-                            {#if artist.image_path}
-                                <img
-                                    src={artist.image_path}
-                                    alt={artist.name}
-                                    class="w-full h-full object-cover"
-                                />
-                            {:else}
-                                <div class="w-full h-full flex items-center justify-center text-blue-400 text-sm">
-                                    No Image
-                                </div>
-                            {/if}
-                        </div>
+        <!-- Pagination -->
+        {#if pagination && last > 1}
+            <div class="flex items-center justify-between mt-6 text-sm text-gray-600">
 
-                        <div class="p-5">
-                            <h2 class="text-lg font-semibold text-blue-900 mb-2">
-                                {artist.name}
-                            </h2>
+                <!-- Showing -->
+                <div>
+                    Showing
+                    <span class="font-semibold">{pagination.from}</span>
+                    –
+                    <span class="font-semibold">{pagination.to}</span>
+                    of
+                    <span class="font-semibold">{pagination.total}</span>
+                    artists
+                </div>
 
-                            <span class="inline-block bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium">
-                                Artist
-                            </span>
-                        </div>
-                    </a>
-                </li>
-            {/each}
-        </ul>
+                <!-- Controls -->
+                <div class="flex items-center space-x-1">
 
-        {#if pagination && pagination.last_page > 1}
-            <div class="flex justify-center items-center gap-2 mt-12 flex-wrap">
-                {#each pagination.links as link}
-                    {#if link.page}
+                    <!-- First -->
+                    {#if current === 1}
+                        <span class="px-3 py-1 text-gray-400 border rounded cursor-not-allowed">
+                            « First
+                        </span>
+                    {:else}
                         <a
-                            href={`?page=${link.page}`}
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition
-                                {link.active
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-white border border-blue-100 hover:bg-blue-50'}"
+                            href="?page=1"
+                            class="px-3 py-1 border rounded hover:bg-gray-100"
                         >
-                            {#if link.label.includes('Previous')}
-                                &lt; ก่อนหน้า
-                            {:else if link.label.includes('Next')}
-                                ถัดไป &gt;
-                            {:else}
-                                {link.label}
-                            {/if}
+                            « First
                         </a>
                     {/if}
-                {/each}
+
+                    <!-- Prev -->
+                    {#if current === 1}
+                        <span class="px-3 py-1 text-gray-400 border rounded cursor-not-allowed">
+                            Prev
+                        </span>
+                    {:else}
+                        <a
+                            href={`?page=${current - 1}`}
+                            class="px-3 py-1 border rounded hover:bg-gray-100"
+                        >
+                            Prev
+                        </a>
+                    {/if}
+
+                    <!-- Page Numbers (window = 5) -->
+                    {#each pages as page}
+                        {#if page === current}
+                            <span class="px-3 py-1 bg-blue-600 text-white border rounded">
+                                {page}
+                            </span>
+                        {:else}
+                            <a
+                                href={`?page=${page}`}
+                                class="px-3 py-1 border rounded hover:bg-gray-100"
+                            >
+                                {page}
+                            </a>
+                        {/if}
+                    {/each}
+
+                    <!-- Next -->
+                    {#if current === last}
+                        <span class="px-3 py-1 text-gray-400 border rounded cursor-not-allowed">
+                            Next
+                        </span>
+                    {:else}
+                        <a
+                            href={`?page=${current + 1}`}
+                            class="px-3 py-1 border rounded hover:bg-gray-100"
+                        >
+                            Next
+                        </a>
+                    {/if}
+
+                    <!-- Last -->
+                    {#if current === last}
+                        <span class="px-3 py-1 text-gray-400 border rounded cursor-not-allowed">
+                            Last »
+                        </span>
+                    {:else}
+                        <a
+                            href={`?page=${last}`}
+                            class="px-3 py-1 border rounded hover:bg-gray-100"
+                        >
+                            Last »
+                        </a>
+                    {/if}
+
+                </div>
             </div>
         {/if}
+
 
     </div>
 </div>
